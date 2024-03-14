@@ -12,8 +12,9 @@ spark = SparkSession.builder.appName("WordCount").getOrCreate()
 data = spark.sparkContext.textFile("C:/SPARK/603/file1.txt")
 
 # Tokenize and count words
-counts = data.flatMap(lambda line: line.split(" ")) \
-             .map(lambda word: (word, 1)) \
+counts = data.flatMap(lambda line: re.findall(r'\b\w+\b', line)) \
+             .filter(lambda word: word.isalpha()) \
+             .map(lambda word: (word.lower(), 1)) \
              .reduceByKey(add)
 
 # Create a timestamp
